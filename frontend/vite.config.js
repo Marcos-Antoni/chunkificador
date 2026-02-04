@@ -6,11 +6,18 @@ export default defineConfig({
     plugins: [react()],
     base: '/brain/',
     server: {
-        host: true, // Necesario para Docker
+        host: true,
         port: 5173,
         allowedHosts: ['marcobarrera.cloud'],
+        proxy: {
+            '/api': {
+                target: 'http://backend:8000',
+                changeOrigin: true,
+                secure: false,
+            }
+        },
         watch: {
-            usePolling: true // Necesario para Docker en Windows a veces
+            usePolling: true
         }
     }
 })

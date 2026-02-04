@@ -170,6 +170,10 @@ def startup_event():
 def read_root():
     return {"status": "ok", "message": "Cerebro digital online 🧠"}
 
+@app.get("/api/")
+def read_api_root():
+    return {"status": "ok", "message": "Cerebro digital online 🧠"}
+
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
