@@ -8,7 +8,7 @@ function App() {
 
     useEffect(() => {
         // Prueba de conexión con el Backend
-        fetch('http://localhost:8000/')
+        fetch('/api/')
             .then(res => res.json())
             .then(data => setStatus(`Backend Online: ${data.message}`))
             .catch(err => setStatus('Error: No se puede conectar con el Backend (¿Está corriendo Docker?)'));

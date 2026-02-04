@@ -17,7 +17,7 @@ function Atomizer() {
         setAtoms(null);
 
         try {
-            const response = await fetch('http://localhost:8000/api/atomize', {
+            const response = await fetch('/api/atomize', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: inputText }),
@@ -57,7 +57,7 @@ function Atomizer() {
         setAtoms(newAtoms);
 
         try {
-            const response = await fetch('http://localhost:8000/api/find_similar', {
+            const response = await fetch('/api/find_similar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -101,7 +101,7 @@ function Atomizer() {
     const handleSaveToCerebro = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/save', {
+            const response = await fetch('/api/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
