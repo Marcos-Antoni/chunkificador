@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: brain-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app  # Hot-reload para Python
+      - ./backend/data:/app/data # Datos persistentes
+      - ./.env:/app/.env # Montar explícitamente el .env para que load_dotenv lo encuentre
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build: ./frontend
+    container_name: brain-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app # Hot-reload para React
+      - /app/node_modules # Evitar sobreescribir node_modules del contenedor
+    depends_on:
+      - backend
+
+  # Opcional: Interfaz visual para ver la DB si quieres
+  # db-browser:
+  #   image: linuxserver/sqlitebrowser
+  #   ...

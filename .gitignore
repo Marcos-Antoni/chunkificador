@@ -1,0 +1,25 @@
+
+# Python base
+__pycache__
+*.py[cod]
+*$py.class
+.venv/
+.env
+
+# Node / Frontend
+node_modules/
+dist/
+coverage/
+npm-debug.log
+
+# Database & Data
+backend/data/
+*.log
+
+# IDES
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
