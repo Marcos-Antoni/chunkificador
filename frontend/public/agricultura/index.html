@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización: Historia de la Agricultura</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --accent: #38bdf8;
+            --tag-bg: #334155;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--accent);
+            text-align: center;
+            border-bottom: 2px solid var(--card-bg);
+            padding-bottom: 10px;
+        }
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-id {
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .tags {
+            margin-top: 15px;
+        }
+        .tag {
+            background: var(--tag-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        .related {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Historia de la Agricultura: Grafo de Conocimiento</h1>
+        
+        <div id="mermaid-container" class="mermaid">
+            <!-- El grafo se generará aquí -->
+        </div>
+
+        <div id="cards-container" class="grid">
+            <!-- Las tarjetas se generarán aquí -->
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+        async function loadData() {
+            const response = await fetch('data.json');
+            const data = await response.json();
+            
+            // Generar Código Mermaid
+            let mermaidGraph = 'graph TD\n';
+            data.forEach(chunk => {
+                // Limpiar texto para el nodo (truncado)
+                let shortText = chunk.text.substring(0, 30) + '...';
+                mermaidGraph += `  ${chunk.id}["${chunk.id}: ${shortText}"]\n`;
+                
+                if (chunk.related_ids) {
+                    chunk.related_ids.forEach(relId => {
+                        mermaidGraph += `  ${chunk.id} --> ${relId}\n`;
+                    });
+                }
+            });
+
+            document.getElementById('mermaid-container').textContent = mermaidGraph;
+            mermaid.run();
+
+            // Generar Tarjetas
+            const container = document.getElementById('cards-container');
+            data.forEach(chunk => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="card-id">${chunk.id.toUpperCase()}</span>
+                    <p>${chunk.text}</p>
+                    <div class="tags">
+                        ${chunk.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+                    </div>
+                    <div class="related">
+                        <strong>Conexiones:</strong> ${chunk.related_ids.join(', ') || 'Ninguna'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        loadData();
+    </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ services:
     build: ./backend
     container_name: brain-backend
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./backend:/app  # Hot-reload para Python
       - ./backend/data:/app/data # Datos persistentes
@@ -19,7 +19,7 @@ services:
     build: ./frontend
     container_name: brain-frontend
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
     volumes:
       - ./frontend:/app # Hot-reload para React
       - /app/node_modules # Evitar sobreescribir node_modules del contenedor
