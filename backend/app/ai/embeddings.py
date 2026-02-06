@@ -5,7 +5,7 @@ from typing import List
 import numpy as np
 
 # Modelo de embeddings de Google
-EMBEDDING_MODEL = "models/text-embedding-004"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 
 def get_embedding(text: str) -> List[float]:
     """

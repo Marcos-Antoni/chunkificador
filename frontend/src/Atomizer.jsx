@@ -3,6 +3,7 @@ import { Brain, ArrowRight, Loader, Trash2, Save, Plus, Search, Link as LinkIcon
 
 function Atomizer() {
     const [inputText, setInputText] = useState('');
+    const [globalTags, setGlobalTags] = useState('');
     const [atoms, setAtoms] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -90,7 +91,7 @@ function Atomizer() {
         const newAtom = {
             id: `manual_${Date.now()}`,
             text: "Nueva idea...",
-            tags: [],
+            type: "Theoretical",
             related_ids: [],
             similarIdeas: [],
             searchingSimilar: false
@@ -100,13 +101,27 @@ function Atomizer() {
 
     const handleSaveToCerebro = async () => {
         setLoading(true);
+        if (!globalTags.trim()) {
+            setError("Por favor, ingresa al menos una materia (Global Tag).");
+            setLoading(false);
+            return;
+        }
+
         try {
+            // Preparar payload limpio
+            const cleanChunks = atoms.map(a => ({
+                id: a.id,
+                text: a.text || a.statement,
+                type: a.type || "Theoretical",
+                related_ids: a.related_ids || []
+            }));
+
             const response = await fetch('/api/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    title: inputText.split('\n')[0].substring(0, 40),
-                    chunks: atoms // Changed from atoms to chunks
+                    global_tags: globalTags.split(',').map(t => t.trim()).filter(t => t),
+                    chunks: cleanChunks
                 }),
             });
 
@@ -114,8 +129,10 @@ function Atomizer() {
                 setSaveStatus('¡Conocimiento integrado en tu Cerebro Digital! 🧠🧬');
                 setAtoms(null);
                 setInputText('');
+                setGlobalTags('');
             } else {
-                setError('Error al guardar en el servidor');
+                const data = await response.json();
+                setError(data.detail || 'Error al guardar en el servidor');
             }
         } catch (err) {
             setError('Error de conexión al intentar guardar');
@@ -162,6 +179,19 @@ function Atomizer() {
 
             {atoms && (
                 <div style={{ marginTop: '40px' }}>
+
+                    {/* INPUT DE MATERIAS GLOBALES */}
+                    <div style={{ marginBottom: '30px', background: '#252525', padding: '1.5rem', borderRadius: '12px', border: '1px solid #444' }}>
+                        <label style={{ display: 'block', color: '#a882ff', marginBottom: '8px', fontWeight: '600' }}>📚 Materias (Tags Globales)</label>
+                        <input
+                            value={globalTags}
+                            onChange={(e) => setGlobalTags(e.target.value)}
+                            placeholder="Ej: Física, Mecánica Cuántica, Apuntes 2024"
+                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #555', background: '#1a1a1a', color: 'white', fontSize: '1rem' }}
+                        />
+                        <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '6px' }}>Estas materias se aplicarán a todas las ideas listadas abajo.</p>
+                    </div>
+
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
                         <h3>⚛️ Refinamiento Atómico ({atoms.length} bloques)</h3>
                         <div style={{ display: 'flex', gap: '12px' }}>
@@ -189,25 +219,27 @@ function Atomizer() {
                                 {/* Main Text */}
                                 <div style={{ marginBottom: '15px' }}>
                                     <textarea
-                                        value={atom.text || atom.statement} // Fallback to statement if text is missing during migration
+                                        value={atom.text || atom.statement}
                                         onChange={(e) => handleUpdateAtom(index, 'text', e.target.value)}
                                         style={{ width: '100%', minHeight: '80px', background: 'transparent', border: 'none', color: '#fff', fontSize: '1.1rem', fontWeight: '400', resize: 'vertical', fontFamily: 'inherit', lineHeight: '1.5' }}
                                         placeholder="Descripción de la idea..."
                                     />
                                 </div>
 
-                                {/* Metadata: Tags & Relations */}
+                                {/* Metadata: Type & Relations */}
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '15px' }}>
 
-                                    {/* Tags */}
+                                    {/* Type Selector */}
                                     <div>
-                                        <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '5px' }}>TAGS</label>
-                                        <input
-                                            value={Array.isArray(atom.tags) ? atom.tags.join(', ') : ''}
-                                            onChange={(e) => handleUpdateAtom(index, 'tags', e.target.value.split(',').map(t => t.trim()))}
-                                            placeholder="tag1, tag2..."
-                                            style={{ width: '100%', background: '#333', border: '1px solid #444', color: '#a882ff', padding: '8px 12px', borderRadius: '6px', fontSize: '0.9rem' }}
-                                        />
+                                        <label style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '5px' }}>TIPO DE CONOCIMIENTO</label>
+                                        <select
+                                            value={atom.type || "Theoretical"}
+                                            onChange={(e) => handleUpdateAtom(index, 'type', e.target.value)}
+                                            style={{ width: '100%', background: '#333', border: '1px solid #444', color: '#a882ff', padding: '8px 12px', borderRadius: '6px', fontSize: '0.9rem', cursor: 'pointer' }}
+                                        >
+                                            <option value="Theoretical">🧠 Teórico (Conceptos)</option>
+                                            <option value="Practical">🛠️ Práctico (Ejercicios/Código)</option>
+                                        </select>
                                     </div>
 
                                     {/* Related IDs */}
