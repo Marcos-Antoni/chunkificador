@@ -12,13 +12,14 @@ Tu tarea: Analizar el texto que te proporcionaré para identificar las "unidades
 
 Criterios de análisis:
 1. Una "idea" se define como una proposición que contiene un sujeto, una acción y un contexto, que aporta información nueva o relevante.
-2. No cuentes oraciones, sino conceptos. Si una oración larga contiene dos hechos distintos, sepáralos.
-3. No cuentes redundancias o frases de relleno como ideas nuevas.
-4. Diferencia entre la Idea Central y las Ideas de Soporte.
+2. PRESERVACIÓN PRÁCTICA: Identifica y extrae como unidades independientes las fórmulas matemáticas, bloques de código y demostraciones prácticas. NO los consideres relleno.
+3. No cuentes oraciones, sino conceptos. Si una oración larga contiene dos hechos distintos, sepáralos.
+4. No cuentes redundancias o frases de relleno como ideas nuevas.
+5. Diferencia entre la Idea Central y las Ideas de Soporte.
 
 Formato de respuesta:
-- Resumen cuantitativo: "El texto contiene un total de [X] ideas principales".
-- Desglose enumerado: Una lista donde cada punto explique la idea encontrada de forma clara y breve.
+- Resumen cuantitativo: "El texto contiene un total de [X] unidades de información (Teóricas + Prácticas)".
+- Desglose enumerado: Una lista donde cada punto explique la idea encontrada o presente el código/fórmula íntegro.
 - Estructura lógica: Organiza las ideas por su jerarquía (Principal vs. Secundaria).
 
 Texto a analizar:
@@ -53,9 +54,10 @@ Análisis Previo (Grafo y Conexiones):
 {graph_analysis}
 
 REGLAS DE GENERACIÓN DE CHUNKS:
-1. COHESIÓN: Cada chunk debe ser un párrafo breve (2-4 oraciones) que explique una idea por sí mismo.
-2. DESCONTEXTUALIZACIÓN: No uses pronombres ambiguos. Si el texto dice "Su teoría...", cámbialo a "La teoría de Einstein...".
-3. CONEXIONES: Usa los IDs generados (chunk_1, chunk_2...) y los related_ids identificados en el grafo anterior.
+1. INTEGRIDAD: Si una idea contiene código, fórmulas o un ejemplo práctico clave, PRESERVALO íntegramente. El texto puede incluir bloques de código Markdown.
+2. COHESIÓN: Cada chunk debe ser autónomo. Si no es código/fórmula, usa párrafos breves (2-4 oraciones).
+3. DESCONTEXTUALIZACIÓN: No uses pronombres ambiguos (ej: "Su teoría" -> "La teoría de Einstein").
+4. CONEXIONES: Usa los IDs generados (chunk_1, chunk_2...) y los related_ids identificados en el grafo anterior.
 
 SALIDA ESPERADA (JSON):
 Devuelve ÚNICAMENTE una lista de objetos JSON con esta estructura exacta:
@@ -63,7 +65,7 @@ Devuelve ÚNICAMENTE una lista de objetos JSON con esta estructura exacta:
 [
   {{
     "id": "chunk_1",
-    "text": "Texto completo del párrafo explicando la idea...",
+    "text": "Texto explicativo o bloque de código/fórmula...",
     "tags": ["tag1", "tag2"],
     "related_ids": ["chunk_2", "chunk_5"] 
   }},

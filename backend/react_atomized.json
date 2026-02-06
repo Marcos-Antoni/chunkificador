@@ -1,0 +1,364 @@
+[
+  {
+    "id": "chunk_1",
+    "text": "Un componente de React es una funci\u00f3n de JavaScript que devuelve marcado (JSX). Representa la unidad at\u00f3mica de la interfaz de usuario y permite organizar la l\u00f3gica y la apariencia de forma modular.",
+    "tags": [
+      "react",
+      "arquitectura",
+      "componentes"
+    ],
+    "related_ids": [
+      "chunk_2",
+      "chunk_3",
+      "chunk_4",
+      "chunk_5",
+      "chunk_20"
+    ]
+  },
+  {
+    "id": "chunk_2",
+    "text": "La naturaleza t\u00e9cnica de un componente de React es ser una funci\u00f3n est\u00e1ndar de JavaScript. A diferencia de otros frameworks, React no utiliza clases complejas de forma obligatoria en su API moderna, sino funciones puras o semipuras.",
+    "tags": [
+      "javascript",
+      "teor\u00eda"
+    ],
+    "related_ids": [
+      "chunk_1",
+      "chunk_24"
+    ]
+  },
+  {
+    "id": "chunk_3",
+    "text": "La composici\u00f3n o anidamiento de componentes permite que un componente principal contenga a otros m\u00e1s peque\u00f1os. Esto facilita la creaci\u00f3n de interfaces complejas a partir de piezas simples y reutilizables.",
+    "tags": [
+      "composici\u00f3n",
+      "anidamiento"
+    ],
+    "related_ids": [
+      "chunk_1",
+      "chunk_25"
+    ]
+  },
+  {
+    "id": "chunk_4",
+    "text": "JSX es una extensi\u00f3n de sintaxis para JavaScript que permite escribir estructuras similares a HTML dentro de archivos JS. React utiliza JSX para describir visualmente c\u00f3mo debe lucir la interfaz de usuario.",
+    "tags": [
+      "jsx",
+      "sintaxis"
+    ],
+    "related_ids": [
+      "chunk_1",
+      "chunk_9",
+      "chunk_11",
+      "chunk_12",
+      "chunk_13",
+      "chunk_14",
+      "chunk_17",
+      "chunk_18"
+    ]
+  },
+  {
+    "id": "chunk_5",
+    "text": "La gesti\u00f3n de estado en React permite que los componentes 'recuerden' informaci\u00f3n y reaccionen a cambios. El estado es lo que convierte una interfaz est\u00e1tica en una aplicaci\u00f3n interactiva y din\u00e1mica.",
+    "tags": [
+      "estado",
+      "reactividad"
+    ],
+    "related_ids": [
+      "chunk_1",
+      "chunk_6",
+      "chunk_22",
+      "chunk_7"
+    ]
+  },
+  {
+    "id": "chunk_6",
+    "text": "Los Hooks son funciones especiales de React que permiten 'enganchar' el estado y otras caracter\u00edsticas de React en componentes funcionales. Comienzan siempre con la palabra 'use', como useState o useEffect.",
+    "tags": [
+      "hooks",
+      "api"
+    ],
+    "related_ids": [
+      "chunk_5",
+      "chunk_21",
+      "chunk_23"
+    ]
+  },
+  {
+    "id": "chunk_7",
+    "text": "El levantamiento de estado (Lifting State Up) es un patr\u00f3n donde el estado se mueve a un ancestro com\u00fan cercano para sincronizar datos entre m\u00faltiples componentes hijos.",
+    "tags": [
+      "arquitectura",
+      "patrones",
+      "estado"
+    ],
+    "related_ids": [
+      "chunk_5",
+      "chunk_8",
+      "chunk_43"
+    ]
+  },
+  {
+    "id": "chunk_8",
+    "text": "Las Props (propiedades) son el mecanismo de transporte de datos en React. Permiten pasar informaci\u00f3n y funciones desde un componente padre hacia un componente hijo de forma unidireccional.",
+    "tags": [
+      "props",
+      "comunicaci\u00f3n"
+    ],
+    "related_ids": [
+      "chunk_7",
+      "chunk_44",
+      "chunk_45"
+    ]
+  },
+  {
+    "id": "chunk_9",
+    "text": "En React, los nombres de los componentes deben comenzar siempre con una letra may\u00fascula (ej. `MyButton`). Si comienzan con min\u00fascula, React los tratar\u00e1 como etiquetas HTML nativas.",
+    "tags": [
+      "jsx",
+      "convenciones"
+    ],
+    "related_ids": [
+      "chunk_4"
+    ]
+  },
+  {
+    "id": "chunk_11",
+    "text": "JSX requiere una rigurosidad mayor que HTML en el cierre de etiquetas. Todas las etiquetas deben cerrarse expl\u00edcitamente, como `<br />` o `<li></li>`.",
+    "tags": [
+      "jsx",
+      "sintaxis"
+    ],
+    "related_ids": [
+      "chunk_4"
+    ]
+  },
+  {
+    "id": "chunk_12",
+    "text": "Un componente de React no puede devolver m\u00faltiples elementos JSX adyacentes; debe devolver un \u00fanico elemento ra\u00edz. Se utilizan Fragmentos (`<>...</>`) para agrupar elementos sin a\u00f1adir nodos extra al DOM.",
+    "tags": [
+      "jsx",
+      "fragmentos"
+    ],
+    "related_ids": [
+      "chunk_4",
+      "chunk_26"
+    ]
+  },
+  {
+    "id": "chunk_13",
+    "text": "Debido a que JSX es JavaScript, se debe usar `className` en lugar de `class` para definir clases de CSS, ya que `class` es una palabra reservada en JS.",
+    "tags": [
+      "jsx",
+      "css"
+    ],
+    "related_ids": [
+      "chunk_4",
+      "chunk_27"
+    ]
+  },
+  {
+    "id": "chunk_14",
+    "text": "Para inyectar l\u00f3gica de JavaScript directamente en el marcado JSX, se utilizan llaves `{ }`. Esto permite imprimir variables, llamar funciones o realizar c\u00e1lculos dentro del HTML.",
+    "tags": [
+      "jsx",
+      "javascript"
+    ],
+    "related_ids": [
+      "chunk_4",
+      "chunk_15"
+    ]
+  },
+  {
+    "id": "chunk_15",
+    "text": "Los atributos din\u00e1micos en JSX utilizan llaves para pasar valores variables a atributos como `src`, `alt`, `href` o `title`.",
+    "tags": [
+      "jsx",
+      "atributos"
+    ],
+    "related_ids": [
+      "chunk_14",
+      "chunk_30"
+    ]
+  },
+  {
+    "id": "chunk_16",
+    "text": "Los estilos en l\u00ednea en React se definen pasando un objeto JavaScript al atributo `style`. Esto requiere el uso de dobles llaves: `style={{ color: 'red' }}`.",
+    "tags": [
+      "jsx",
+      "estilos"
+    ],
+    "related_ids": [
+      "chunk_14",
+      "chunk_31"
+    ]
+  },
+  {
+    "id": "chunk_17",
+    "text": "React no tiene una sintaxis especial para condicionales. Se utiliza la l\u00f3gica est\u00e1ndar de JavaScript como `if/else`, el operador ternario `? :` o el operador l\u00f3gico `&&` dentro o fuera de JSX.",
+    "tags": [
+      "l\u00f3gica",
+      "condicionales"
+    ],
+    "related_ids": [
+      "chunk_4",
+      "chunk_32",
+      "chunk_33",
+      "chunk_34"
+    ]
+  },
+  {
+    "id": "chunk_18",
+    "text": "Para renderizar listas de elementos, se utiliza el m\u00e9todo `.map()` de JavaScript. Este m\u00e9todo transforma un array de datos en un array de elementos JSX.",
+    "tags": [
+      "listas",
+      "iteraci\u00f3n"
+    ],
+    "related_ids": [
+      "chunk_4",
+      "chunk_19"
+    ]
+  },
+  {
+    "id": "chunk_19",
+    "text": "Cada elemento generado en una lista mediante `.map()` debe tener un atributo `key` \u00fanico. Las keys ayudan a React a identificar qu\u00e9 elementos han cambiado, se han a\u00f1adido o eliminado para optimizar el rendimiento.",
+    "tags": [
+      "rendimiento",
+      "listas"
+    ],
+    "related_ids": [
+      "chunk_18",
+      "chunk_36",
+      "chunk_37"
+    ]
+  },
+  {
+    "id": "chunk_20",
+    "text": "El manejo de eventos en React se realiza pasando funciones a los manejadores como `onClick`. A diferencia de HTML, estas funciones se pasan por referencia y no como strings de c\u00f3digo.",
+    "tags": [
+      "eventos",
+      "interactividad"
+    ],
+    "related_ids": [
+      "chunk_1",
+      "chunk_38"
+    ]
+  },
+  {
+    "id": "chunk_21",
+    "text": "El Hook `useState` devuelve un array con dos elementos: el valor del estado actual y una funci\u00f3n para actualizarlo. Se suele usar desestructuraci\u00f3n: `const [count, setCount] = useState(0);`.",
+    "tags": [
+      "hooks",
+      "useState"
+    ],
+    "related_ids": [
+      "chunk_6",
+      "chunk_39",
+      "chunk_40",
+      "chunk_41"
+    ]
+  },
+  {
+    "id": "chunk_22",
+    "text": "El estado en React es independiente por instancia. Si se renderiza el mismo componente varias veces, cada uno mantendr\u00e1 su propio estado interno aislado de los dem\u00e1s.",
+    "tags": [
+      "estado",
+      "instancias"
+    ],
+    "related_ids": [
+      "chunk_5",
+      "chunk_42"
+    ]
+  },
+  {
+    "id": "chunk_23",
+    "text": "Los Hooks tienen restricciones de uso: solo pueden ser llamados en el nivel superior de un componente o de otros Hooks. No pueden llamarse dentro de bucles, condiciones o funciones anidadas.",
+    "tags": [
+      "hooks",
+      "reglas"
+    ],
+    "related_ids": [
+      "chunk_6"
+    ]
+  },
+  {
+    "id": "chunk_24",
+    "text": "Pr\u00e1ctica de funci\u00f3n b\u00e1sica: \n```javascript\nfunction MyButton() {\n  return <button>Soy un bot\u00f3n</button>;\n}\n```",
+    "tags": [
+      "pr\u00e1ctica",
+      "c\u00f3digo"
+    ],
+    "related_ids": [
+      "chunk_2"
+    ]
+  },
+  {
+    "id": "chunk_25",
+    "text": "Pr\u00e1ctica de anidamiento: \n```javascript\nexport default function MyApp() {\n  return (\n    <div>\n      <h1>Bienvenido</h1>\n      <MyButton />\n    </div>\n  );\n}\n```",
+    "tags": [
+      "pr\u00e1ctica",
+      "anidamiento"
+    ],
+    "related_ids": [
+      "chunk_3"
+    ]
+  },
+  {
+    "id": "chunk_30",
+    "text": "Pr\u00e1ctica de atributos din\u00e1micos: \n```javascript\n<img className=\"avatar\" src={user.imageUrl} />\n```",
+    "tags": [
+      "pr\u00e1ctica",
+      "jsx"
+    ],
+    "related_ids": [
+      "chunk_15"
+    ]
+  },
+  {
+    "id": "chunk_33",
+    "text": "Pr\u00e1ctica de operador ternario: \n```javascript\n<div>{isLoggedIn ? <AdminPanel /> : <LoginForm />}</div>\n```",
+    "tags": [
+      "pr\u00e1ctica",
+      "condicionales"
+    ],
+    "related_ids": [
+      "chunk_17"
+    ]
+  },
+  {
+    "id": "chunk_36",
+    "text": "Pr\u00e1ctica de render de lista con keys: \n```javascript\nconst listItems = products.map(product => (\n  <li key={product.id}>{product.title}</li>\n));\n```",
+    "tags": [
+      "pr\u00e1ctica",
+      "listas"
+    ],
+    "related_ids": [
+      "chunk_18",
+      "chunk_19"
+    ]
+  },
+  {
+    "id": "chunk_38",
+    "text": "Pr\u00e1ctica de manejo de eventos: \n```javascript\nfunction handleClick() {\n  alert('\u00a1Me hiciste clic!');\n}\nreturn <button onClick={handleClick}>Clic</button>;\n```",
+    "tags": [
+      "pr\u00e1ctica",
+      "eventos"
+    ],
+    "related_ids": [
+      "chunk_20"
+    ]
+  },
+  {
+    "id": "chunk_45",
+    "text": "Ejemplo Final de Estado Compartido: Un componente padre gestiona el `count` mediante `useState` y lo pasa junto a la funci\u00f3n incrementadora a dos componentes hijos `MyButton` v\u00eda props, sincronizando ambos botones.",
+    "tags": [
+      "pr\u00e1ctica",
+      "arquitectura"
+    ],
+    "related_ids": [
+      "chunk_7",
+      "chunk_8",
+      "chunk_21"
+    ]
+  }
+]

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización: React Core Concepts</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --accent: #61dafb; /* React Blue */
+            --tag-bg: #334155;
+            --code-bg: #000000;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border-top: 4px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .card-id {
+            font-weight: bold;
+            color: var(--accent);
+            font-family: monospace;
+            background: rgba(97, 218, 251, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .content {
+            flex-grow: 1;
+        }
+        pre {
+            background: var(--code-bg) !important;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid var(--tag-bg);
+        }
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+        }
+        .tags {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            background: var(--tag-bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .related {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--tag-bg);
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚛️ React Core: Grafo de Conocimiento</h1>
+        
+        <div id="mermaid-container" class="mermaid">
+            <!-- Grafo -->
+        </div>
+
+        <div id="cards-container" class="grid">
+            <!-- Tarjetas -->
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: false, 
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: false, htmlLabels: true }
+        });
+
+        async function init() {
+            const res = await fetch('data.json');
+            const data = await res.json();
+            
+            // 1. Mermaid Graph
+            let mCode = 'graph TD\n';
+            data.forEach(c => {
+                let label = c.text.split('\n')[0].substring(0, 40) + '...';
+                mCode += `  ${c.id}["<b>${c.id}</b><br/><small>${label}</small>"]\n`;
+                if (c.related_ids) {
+                    c.related_ids.forEach(rid => {
+                        // Solo conectar si el destino existe en este set
+                        if(data.find(x => x.id === rid)) {
+                            mCode += `  ${c.id} --> ${rid}\n`;
+                        }
+                    });
+                }
+            });
+
+            const mDiv = document.getElementById('mermaid-container');
+            mDiv.textContent = mCode;
+            await mermaid.run({ nodes: [mDiv] });
+
+            // 2. Full Cards
+            const container = document.getElementById('cards-container');
+            data.forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-id">${c.id.toUpperCase()}</span>
+                    </div>
+                    <div class="content">
+                        ${marked.parse(c.text)}
+                    </div>
+                    <div class="tags">
+                        ${c.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+                    </div>
+                    <div class="related">
+                        <strong>Relacionado con:</strong> ${c.related_ids.join(', ') || 'N/A'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
