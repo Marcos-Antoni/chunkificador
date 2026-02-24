@@ -6,19 +6,20 @@ async def run_ai_chain(model, initial_input: str, prompts: List[str]) -> str:
     [FUNCIONALIDAD 3] Ejecuta una cadena de prompts secuencialmente.
     Cada paso recibe el output del anterior como '{input}'.
     """
-    current_data = initial_input
+    current_data = [initial_input]
     
     for i, prompt_template in enumerate(prompts):
+        print(current_data)
         step_num = i + 1
         print(f"--- [DEBUG] Ejecutando Paso {step_num}/{len(prompts)} ---")
         
-        formatted_prompt = prompt_template.format(input=current_data)
+        formatted_prompt = prompt_template.format(input="\n\n".join(current_data))
         
         # Usamos la versión asíncrona para no bloquear el hilo
         response = await model.generate_content_async(formatted_prompt)
-        current_data = response.text
+        current_data.append(response.text)
         
-    return current_data
+    return current_data[-1]
 
 def parse_json_response(raw_content: str) -> List[Dict]:
     """
