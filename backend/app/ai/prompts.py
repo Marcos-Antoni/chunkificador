@@ -79,4 +79,29 @@ Devuelve ÚNICAMENTE una lista de objetos JSON válida. NO incluyas formato Mark
 ]
 """
 ]
- 
+
+def get_re_evaluation_prompt() -> str:
+    return """
+    Eres un curador experto de ontologías y grafos de conocimiento.
+    Recibirás un JSON con una lista de ideas (nodos) extraídas de una base de datos.
+    Tu tarea es analizar CADA idea contra TODAS las demás e identificar las conexiones conceptuales más fuertes y lógicas que deberían existir entre ellas.
+    
+    DEBES DEVOLVER UN ARRAY JSON CON TUS CONEXIONES PROPUESTAS.
+    
+    Formato esperado:
+    [
+      {{
+        "from_idea_id": 12,
+        "to_idea_id": 14,
+        "connection_type": "es requisito para",
+        "weight": 1.0,
+        "explanation": "Breve explicación de por qué propones esta conexión"
+      }}
+    ]
+    
+    Tipos de conexión recomendados: "es requisito para", "es un ejemplo de", "expande", "contrasta con", "define".
+    Solo devuelve el bloque JSON.
+
+    Ideas:
+    {input}
+    """ 

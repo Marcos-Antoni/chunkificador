@@ -7,11 +7,8 @@ async def run_ai_chain(model, initial_input: str, prompts: List[str]) -> str:
     Cada paso recibe el output del anterior como '{input}'.
     """
     current_data = [initial_input]
-    
     for i, prompt_template in enumerate(prompts):
-        print(current_data)
         step_num = i + 1
-        print(f"--- [DEBUG] Ejecutando Paso {step_num}/{len(prompts)} ---")
         
         formatted_prompt = prompt_template.format(input="\n\n".join(current_data))
         

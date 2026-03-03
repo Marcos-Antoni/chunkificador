@@ -9,10 +9,13 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "framer-motion": "^10.18.0",
+        "lucide-react": "^0.263.1",
+        "mermaid": "^11.12.3",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "lucide-react": "^0.263.1",
-        "framer-motion": "^10.16.4"
+        "react-mermaid2": "^0.1.4",
+        "react-router-dom": "^7.13.1"
     },
     "devDependencies": {
         "@types/react": "^18.2.15",
