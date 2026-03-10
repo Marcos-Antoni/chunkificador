@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import mermaid from 'mermaid';
-import { Sparkles, Save, XCircle, Search, CheckCircle2, AlertCircle, Bot, Network, Loader2, Code, RotateCcw } from 'lucide-react';
+import { Sparkles, Save, XCircle, CheckCircle2, AlertCircle, Bot, Network, Loader2, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { ConnectionProposal } from '../types';
 
 // Initialize mermaid
 mermaid.initialize({ startOnLoad: false, theme: 'dark' });
@@ -9,14 +10,14 @@ mermaid.initialize({ startOnLoad: false, theme: 'dark' });
 export default function AiReEvaluation() {
     const [batchIdsInput, setBatchIdsInput] = useState("");
     const [originalMermaid, setOriginalMermaid] = useState("");
-    const [proposals, setProposals] = useState([]);
+    const [proposals, setProposals] = useState<ConnectionProposal[]>([]);
 
     const [loadingGraph, setLoadingGraph] = useState(false);
     const [loadingAi, setLoadingAi] = useState(false);
     const [saving, setSaving] = useState(false);
 
-    const [error, setError] = useState(null);
-    const [successMsg, setSuccessMsg] = useState(null);
+    const [error, setError] = useState<string | null>(null);
+    const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
     // Dynamic combinations
     const [previewMermaid, setPreviewMermaid] = useState("");
@@ -49,11 +50,8 @@ export default function AiReEvaluation() {
 
         let combined = originalMermaid;
         if (proposals.length > 0) {
-            // Append proposals to the bottom of the graph
             let newEdges = "\n    %% Proposed Connections\n";
-            proposals.forEach((p, idx) => {
-                // Style: dotted link loosely
-                // nodeA-. "type" .->nodeB
+            proposals.forEach((p) => {
                 newEdges += `    node${p.from_idea_id}-. "${p.connection_type}" .->node${p.to_idea_id};\n`;
             });
             combined += newEdges;
@@ -82,7 +80,7 @@ export default function AiReEvaluation() {
 
             setOriginalMermaid(data.mermaid);
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Error desconocido');
         } finally {
             setLoadingGraph(false);
         }
@@ -109,7 +107,7 @@ export default function AiReEvaluation() {
                 setSuccessMsg("La IA analizó los lotes pero no encontró nuevas conexiones relevantes.");
             }
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Error desconocido');
         } finally {
             setLoadingAi(false);
         }
@@ -131,18 +129,18 @@ export default function AiReEvaluation() {
             if (!res.ok) throw new Error(data.detail || 'Error al guardar');
 
             setSuccessMsg(`Se guardaron exitosamente ${data.connections_added} conexiones.`);
-            setProposals([]); // Clear after save
+            setProposals([]);
 
             // Refresh graph to show the new permanent connections
             handleFetchGraph();
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Error desconocido');
         } finally {
             setSaving(false);
         }
     };
 
-    const removeProposal = (index) => {
+    const removeProposal = (index: number) => {
         setProposals(prev => prev.filter((_, i) => i !== index));
     };
 
@@ -402,7 +400,6 @@ export default function AiReEvaluation() {
                                                 <span style={{ color: 'var(--warning-color)', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
                                                     <span style={{ height: '2px', width: '20px', background: 'var(--warning-color)', display: 'inline-block' }}></span>
                                                     {prop.connection_type}
-                                                    {/* Arrow head equivalent */}
                                                     <span style={{ width: '0', height: '0', borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '6px solid var(--warning-color)', display: 'inline-block', marginLeft: '-2px' }}></span>
                                                 </span>
                                                 <span style={{ background: 'var(--bg-color)', padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>ID {prop.to_idea_id}</span>
@@ -438,8 +435,8 @@ export default function AiReEvaluation() {
                                                 borderRadius: '50%',
                                                 transition: 'color 0.2s, background-color 0.2s'
                                             }}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)')}
+                                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                                         >
                                             <XCircle size={24} />
                                         </motion.button>

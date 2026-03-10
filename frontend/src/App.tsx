@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Brain, Sparkles, Zap, Network, Bot, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,7 +23,7 @@ function Home() {
                 setStatus(`Backend Online: ${data.message}`);
                 setIsOnline(true);
             })
-            .catch(err => {
+            .catch(() => {
                 setStatus('Desconectado. Asegúrate de que Docker esté corriendo.');
                 setIsOnline(false);
             });
@@ -68,7 +68,13 @@ function Home() {
     );
 }
 
-function NavLinkCustom({ to, icon, text }) {
+interface NavLinkCustomProps {
+    to: string;
+    icon: ReactNode;
+    text: string;
+}
+
+function NavLinkCustom({ to, icon, text }: NavLinkCustomProps) {
     const location = useLocation();
     const isActive = location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
 
@@ -79,7 +85,11 @@ function NavLinkCustom({ to, icon, text }) {
     );
 }
 
-function Layout({ children }) {
+interface LayoutProps {
+    children: ReactNode;
+}
+
+function Layout({ children }: LayoutProps) {
     return (
         <div className="app-container">
             <nav className="navbar">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import mermaid from 'mermaid';
 import { Network, Loader2, Code } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +9,7 @@ export default function MermaidViewer() {
     const [inputIds, setInputIds] = useState("");
     const [mermaidCode, setMermaidCode] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchGraph = async () => {
         if (!inputIds.trim()) return;
@@ -28,7 +28,7 @@ export default function MermaidViewer() {
 
             setMermaidCode(data.mermaid);
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Error desconocido');
         } finally {
             setLoading(false);
         }
@@ -36,8 +36,11 @@ export default function MermaidViewer() {
 
     useEffect(() => {
         if (mermaidCode) {
-            document.getElementById('mermaid-output').removeAttribute('data-processed');
-            mermaid.contentLoaded();
+            const element = document.getElementById('mermaid-output');
+            if (element) {
+                element.removeAttribute('data-processed');
+                mermaid.contentLoaded();
+            }
         }
     }, [mermaidCode]);
 

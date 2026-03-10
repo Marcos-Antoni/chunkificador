@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Link as LinkIcon, ExternalLink, Tag } from 'lucide-react';
+import type { IdeaData } from '../types';
 
 export default function IdeaDetail() {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [ideaData, setIdeaData] = useState(null);
+    const [ideaData, setIdeaData] = useState<IdeaData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -21,7 +22,7 @@ export default function IdeaDetail() {
                 setIdeaData(data.idea);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 setError(err.message);
                 setLoading(false);
             });
@@ -122,8 +123,8 @@ export default function IdeaDetail() {
                                         textDecoration: 'none',
                                         transition: 'all 0.2s'
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent-color)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-color)'}
+                                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--accent-color)')}
+                                    onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-color)')}
                                 >
                                     {sub.name}
                                 </Link>

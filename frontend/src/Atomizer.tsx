@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Brain, ArrowRight, Loader, Trash2, Save, Plus, Search, Link as LinkIcon, Sparkles } from 'lucide-react';
+import { useState, type ChangeEvent } from 'react';
+import { Brain, Loader, Trash2, Save, Plus, Search, Link as LinkIcon, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Atom, SimilarIdea } from './types';
 
 function Atomizer() {
     const [inputText, setInputText] = useState('');
     const [globalTags, setGlobalTags] = useState('');
-    const [atoms, setAtoms] = useState(null);
+    const [atoms, setAtoms] = useState<Atom[] | null>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [saveStatus, setSaveStatus] = useState(null);
+    const [error, setError] = useState<string | null>(null);
+    const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
     const handleAtomize = async () => {
         if (!inputText.trim()) return;
@@ -27,7 +28,7 @@ function Atomizer() {
 
             const data = await response.json();
             if (response.ok) {
-                let enrichedAtoms = data.atoms;
+                const enrichedAtoms: Atom[] = data.atoms;
                 const onlySimilar = enrichedAtoms.filter(a => a.similarIdeas && a.similarIdeas.length > 0);
 
                 if (onlySimilar.length > 0) {
@@ -40,17 +41,18 @@ function Atomizer() {
             } else {
                 setError(data.detail || 'Error al atomizar el texto');
             }
-        } catch (err) {
+        } catch {
             setError('Error de conexión con el cerebro');
         } finally {
             setLoading(false);
         }
     };
 
-    const findSimilar = async (index) => {
+    const findSimilar = async (index: number) => {
+        if (!atoms) return;
         const atom = atoms[index];
         const newAtoms = [...atoms];
-        newAtoms[index].searchingSimilar = true;
+        newAtoms[index] = { ...newAtoms[index], searchingSimilar: true };
         setAtoms(newAtoms);
 
         try {
@@ -63,28 +65,31 @@ function Atomizer() {
             });
             const data = await response.json();
             if (response.ok) {
-                newAtoms[index].similarIdeas = data.similar;
+                newAtoms[index] = { ...newAtoms[index], similarIdeas: data.similar as SimilarIdea[] };
             }
         } catch (err) {
             console.error("Error buscando similares", err);
         } finally {
-            newAtoms[index].searchingSimilar = false;
+            newAtoms[index] = { ...newAtoms[index], searchingSimilar: false };
             setAtoms([...newAtoms]);
         }
     };
 
-    const handleUpdateAtom = (index, field, value) => {
+    const handleUpdateAtom = (index: number, field: keyof Atom, value: string) => {
+        if (!atoms) return;
         const newAtoms = [...atoms];
-        newAtoms[index][field] = value;
+        newAtoms[index] = { ...newAtoms[index], [field]: value };
         setAtoms(newAtoms);
     };
 
-    const handleDeleteAtom = (index) => {
+    const handleDeleteAtom = (index: number) => {
+        if (!atoms) return;
         setAtoms(atoms.filter((_, i) => i !== index));
     };
 
     const handleAddAtom = () => {
-        const newAtom = {
+        if (!atoms) return;
+        const newAtom: Atom = {
             id: `manual_${Date.now()}`,
             text: "Nueva idea...",
             type: "Theoretical",
@@ -96,6 +101,7 @@ function Atomizer() {
     };
 
     const handleSaveToCerebro = async () => {
+        if (!atoms) return;
         setLoading(true);
         if (!globalTags.trim()) {
             setError("Por favor, ingresa al menos una materia (Global Tag).");
@@ -129,7 +135,7 @@ function Atomizer() {
                 const data = await response.json();
                 setError(data.detail || 'Error al guardar en el servidor');
             }
-        } catch (err) {
+        } catch {
             setError('Error de conexión al intentar guardar');
         } finally {
             setLoading(false);
@@ -171,7 +177,7 @@ function Atomizer() {
                     >
                         <textarea
                             value={inputText}
-                            onChange={(e) => setInputText(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
                             placeholder="Pega aquí tu flujo de pensamiento, artículo o nota detallada..."
                             className="input-field"
                             style={{ minHeight: '350px', fontSize: '1.1rem', lineHeight: '1.6', resize: 'vertical' }}
@@ -227,7 +233,7 @@ function Atomizer() {
                             <label style={{ display: 'block', color: 'var(--text-secondary)', marginBottom: '8px', fontWeight: '600' }}>📚 Materias (Tags Globales)</label>
                             <input
                                 value={globalTags}
-                                onChange={(e) => setGlobalTags(e.target.value)}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => setGlobalTags(e.target.value)}
                                 placeholder="Ej: Física, Mecánica Cuántica, Apuntes 2024"
                                 className="input-field"
                             />
@@ -300,7 +306,7 @@ function Atomizer() {
                                         <div style={{ marginBottom: '1.5rem' }}>
                                             <textarea
                                                 value={atom.text || atom.statement}
-                                                onChange={(e) => handleUpdateAtom(index, 'text', e.target.value)}
+                                                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => handleUpdateAtom(index, 'text', e.target.value)}
                                                 className="input-field"
                                                 style={{ minHeight: '100px', fontSize: '1.05rem', fontWeight: '400', fontFamily: 'inherit', resize: 'vertical' }}
                                                 placeholder="Descripción de la idea..."
@@ -312,7 +318,7 @@ function Atomizer() {
                                                 <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '8px' }}>TIPO DE CONOCIMIENTO</label>
                                                 <select
                                                     value={atom.type || "Theoretical"}
-                                                    onChange={(e) => handleUpdateAtom(index, 'type', e.target.value)}
+                                                    onChange={(e: ChangeEvent<HTMLSelectElement>) => handleUpdateAtom(index, 'type', e.target.value)}
                                                     className="input-field"
                                                     style={{ cursor: 'pointer' }}
                                                 >

@@ -1,28 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, Filter, Loader2, ArrowRight, ChevronLeft, ChevronRight, Hash, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Subject, SearchResult, Pagination } from '../types';
 
 export default function AdvancedSearch() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     // State for inputs (synced with URL)
     const [searchText, setSearchText] = useState(searchParams.get('q') || '');
-    const [threshold, setThreshold] = useState(parseFloat(searchParams.get('t')) || 0.6);
+    const [threshold, setThreshold] = useState(parseFloat(searchParams.get('t') || '0.6'));
     const [batchId, setBatchId] = useState(searchParams.get('batch') || '');
-    const [selectedSubjects, setSelectedSubjects] = useState(
-        searchParams.get('subjects') ? searchParams.get('subjects').split(',').map(Number) : []
+    const [selectedSubjects, setSelectedSubjects] = useState<number[]>(
+        searchParams.get('subjects') ? searchParams.get('subjects')!.split(',').map(Number) : []
     );
     const [ideaId, setIdeaId] = useState(searchParams.get('id') || '');
     const [ideaType, setIdeaType] = useState(searchParams.get('type') || '');
-    const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
+    const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
 
     // Results state
-    const [availableSubjects, setAvailableSubjects] = useState([]);
-    const [results, setResults] = useState([]);
-    const [pagination, setPagination] = useState({ total_pages: 1, total_results: 0 });
+    const [availableSubjects, setAvailableSubjects] = useState<Subject[]>([]);
+    const [results, setResults] = useState<SearchResult[]>([]);
+    const [pagination, setPagination] = useState<Pagination>({ total_pages: 1, total_results: 0 });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [hasSearched, setHasSearched] = useState(false);
 
     // Fetch subjects on mount
@@ -45,12 +46,12 @@ export default function AdvancedSearch() {
 
         const currentParams = {
             text: searchParams.get('q') || '',
-            threshold: parseFloat(searchParams.get('t')) || 0.6,
+            threshold: parseFloat(searchParams.get('t') || '0.6'),
             batch_id: searchParams.get('batch') || null,
-            subject_ids: searchParams.get('subjects') ? searchParams.get('subjects').split(',').map(Number) : [],
-            idea_id: searchParams.get('id') ? parseInt(searchParams.get('id')) : null,
+            subject_ids: searchParams.get('subjects') ? searchParams.get('subjects')!.split(',').map(Number) : [],
+            idea_id: searchParams.get('id') ? parseInt(searchParams.get('id')!) : null,
             type: searchParams.get('type') || null,
-            page: parseInt(searchParams.get('page')) || 1,
+            page: parseInt(searchParams.get('page') || '1'),
             limit: 10
         };
 
@@ -71,13 +72,13 @@ export default function AdvancedSearch() {
             });
             setPage(data.current_page || 1);
         } catch (err) {
-            setError(err.message);
+            setError(err instanceof Error ? err.message : 'Error desconocido');
         } finally {
             setLoading(false);
         }
     };
 
-    const updateFilters = (newFilters) => {
+    const updateFilters = (newFilters: Record<string, string | number | null>) => {
         const params = new URLSearchParams(searchParams);
 
         // Merge with existing params or set new ones
@@ -85,7 +86,7 @@ export default function AdvancedSearch() {
             if (newFilters[key] === null || newFilters[key] === '') {
                 params.delete(key);
             } else {
-                params.set(key, newFilters[key]);
+                params.set(key, String(newFilters[key]));
             }
         });
 
@@ -97,7 +98,7 @@ export default function AdvancedSearch() {
         setSearchParams(params);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e?: FormEvent) => {
         if (e) e.preventDefault();
         updateFilters({
             q: searchText,
@@ -110,7 +111,7 @@ export default function AdvancedSearch() {
         });
     };
 
-    const toggleSubject = (id) => {
+    const toggleSubject = (id: number) => {
         const newSubjects = selectedSubjects.includes(id)
             ? selectedSubjects.filter(s => s !== id)
             : [...selectedSubjects, id];
@@ -119,7 +120,7 @@ export default function AdvancedSearch() {
         // We don't update URL immediately for subjects to allow multiple selection before search
     };
 
-    const handlePageChange = (newPage) => {
+    const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= pagination.total_pages) {
             updateFilters({ page: newPage });
         }
@@ -372,12 +373,11 @@ export default function AdvancedSearch() {
                                                 {idea.batch_id && (
                                                     <button
                                                         onClick={(e) => {
-                                                            e.preventDefault(); // Prevent triggering the card's Link
-                                                            e.stopPropagation(); // Stop event from bubbling up
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
 
-                                                            // Navigate to the same page but with the new batch filter
                                                             const newParams = new URLSearchParams(searchParams);
-                                                            newParams.set('batch', idea.batch_id);
+                                                            newParams.set('batch', idea.batch_id!);
                                                             newParams.set('page', '1');
                                                             setSearchParams(newParams);
                                                         }}
@@ -417,7 +417,6 @@ export default function AdvancedSearch() {
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                     {[...Array(pagination.total_pages)].map((_, i) => {
                                         const pNum = i + 1;
-                                        // Show 5 pages around the current one
                                         if (Math.abs(pNum - page) <= 2 || pNum === 1 || pNum === pagination.total_pages) {
                                             return (
                                                 <button
